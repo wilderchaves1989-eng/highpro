@@ -46,6 +46,7 @@ module.exports = async (req, res) => {
       res.json({ success: true, message: 'Dados salvos com sucesso' });
     }
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('API Error:', error);
+    res.status(500).json({ error: error.message, details: process.env.MONGODB_URI ? 'URI set' : 'URI missing' });
   }
 };
