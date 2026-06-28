@@ -1,22 +1,12 @@
 {
-  "name": "wilder-chaves",
+  "name": "high-pro",
   "version": "1.0.0",
-  "description": "",
-  "main": "server.js",
+  "description": "Sistema HIGH PRO - Controlo de Horas 24/7",
   "scripts": {
-    "start": "node server.js",
-    "dev": "node server-firebase.js",
-    "mongodb": "node server-mongodb.js",
-    "deploy": "firebase deploy"
+    "dev": "vercel dev",
+    "build": "echo 'No build needed'"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
   "dependencies": {
-    "dotenv": "^17.4.2",
-    "express": "^5.2.1",
-    "firebase-admin": "^14.1.0",
     "mongodb": "^7.4.0"
   }
 }
