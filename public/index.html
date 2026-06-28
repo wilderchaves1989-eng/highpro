@@ -255,7 +255,8 @@ const HORAS={
   atualizarObsCategoria(){const cat=document.getElementById('lhCategoriaAtestado').value;document.getElementById('lhObs').value=cat;},
   abrirContato(){this.openModal('modalContato');},
   abrirAjuda(){this.openModal('modalAjuda');},
-  async init(){await fetch('/api/dados').then(r=>r.json()).then(data=>{if(data.colaboradores){this.colaboradores=data.colaboradores;this.horas=data.horas||{}}this.render();}).catch(()=>this.render());}
+  loadFromLocalStorage(){const colabs=localStorage.getItem('hp_colab_saas_v2'),hrs=localStorage.getItem('hp_horas_saas_v2');if(colabs&&hrs){this.colaboradores=JSON.parse(colabs);this.horas=JSON.parse(hrs);}},
+  async init(){fetch('/api/dados').then(r=>r.json()).then(data=>{if(data.colaboradores&&data.colaboradores.length>0){this.colaboradores=data.colaboradores;this.horas=data.horas||{};}else{this.loadFromLocalStorage();}this.render();}).catch(e=>{console.error('Falha ao carregar MongoDB:',e);this.loadFromLocalStorage();this.render();});}
 };
 
 document.addEventListener('DOMContentLoaded',()=>HORAS.init());
