@@ -258,7 +258,7 @@ const HORAS={
   abrirContato(){this.openModal('modalContato');},
   abrirAjuda(){this.openModal('modalAjuda');},
   loadFromLocalStorage(){const colabs=localStorage.getItem('hp_colab_saas_v2'),hrs=localStorage.getItem('hp_horas_saas_v2');if(colabs&&hrs){this.colaboradores=JSON.parse(colabs);this.horas=JSON.parse(hrs);}},
-  async init(){fetch('/api/dados').then(r=>r.json()).then(data=>{if(data.colaboradores&&data.colaboradores.length>0){this.colaboradores=data.colaboradores;this.horas=data.horas||{};}else{this.loadFromLocalStorage();}this.render();}).catch(e=>{console.error('Falha ao carregar MongoDB:',e);this.loadFromLocalStorage();this.render();});}
+  async init(){if(!this.colaboradores||this.colaboradores.length===0){localStorage.clear();}fetch('/api/dados').then(r=>r.json()).then(data=>{if(data.colaboradores&&data.colaboradores.length>0){this.colaboradores=data.colaboradores;this.horas=data.horas||{};}else{this.loadFromLocalStorage();}this.render();}).catch(e=>{console.error('Falha ao carregar MongoDB:',e);this.loadFromLocalStorage();this.render();});}
 };
 
 document.addEventListener('DOMContentLoaded',()=>HORAS.init());
