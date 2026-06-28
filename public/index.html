@@ -241,8 +241,8 @@ const DEFAULT_HORAS={
     'HP-26-005':[{data:'2026-06-15',tipo:'horas',qtd:10,obs:''},{data:'2026-06-16',tipo:'horas',qtd:10,obs:''},{data:'2026-06-17',tipo:'horas',qtd:8,obs:''},{data:'2026-06-18',tipo:'horas',qtd:10,obs:''},{data:'2026-06-19',tipo:'horas',qtd:10,obs:''},{data:'2026-06-20',tipo:'horas',qtd:6,obs:''}]
 };
 const HORAS={
-  colaboradores:DEFAULT_COLAB.slice(),
-  horas:{...DEFAULT_HORAS},
+  colaboradores:DEFAULT_COLAB,
+  horas:DEFAULT_HORAS,
   save(){localStorage.setItem('hp_colab_saas_v2',JSON.stringify(this.colaboradores));localStorage.setItem('hp_horas_saas_v2',JSON.stringify(this.horas));fetch('/api/dados',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({colaboradores:this.colaboradores,horas:this.horas})}).then(r=>r.json()).then(()=>{toast('✅ Sincronizado','success');}).catch(e=>{console.error('Erro:',e);toast('⚠️ Erro ao sincronizar','warning');});},
   openModal(id){document.getElementById(id).classList.add('show');},
   closeModal(id){document.getElementById(id).classList.remove('show');},
