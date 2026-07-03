@@ -4,11 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
   <title>HIGH PRO | Controlo de Horas</title>
-  <!-- Firebase SDK (Compat) -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..700&display=swap" rel="stylesheet">
@@ -28,7 +23,7 @@
       --shadow-lg:0 24px 48px rgba(0,0,0,0.12);
       --radius-sm:8px;--radius-md:12px;--radius-lg:16px;--radius-xl:20px;
     }
-    body{font-family:'SF Pro Display','Geist Sans','Geist',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Inter',Helvetica,Arial,sans-serif;background:var(--background);color:var(--text-primary);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;line-height:1.5;font-weight:400}
+    body{font-family:var(--font);background:var(--background);color:var(--text-primary);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;line-height:1.5}
     .app-container{min-height:100vh;display:flex;flex-direction:column}
     .toast-container{position:fixed;top:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:10px;pointer-events:none}
     .toast{padding:14px 24px;border-radius:var(--radius-sm);color:#fff;font-size:13px;font-weight:500;box-shadow:var(--shadow-lg);animation:slideIn 0.3s cubic-bezier(0.16,1,0.3,1);max-width:400px;display:flex;align-items:center;gap:10px;pointer-events:auto;backdrop-filter:blur(8px)}
@@ -37,17 +32,11 @@
     @keyframes slideIn{from{transform:translateX(120%);opacity:0}to{transform:translateX(0);opacity:1}}
     @keyframes fadeOut{from{opacity:1}to{opacity:0;transform:translateY(-8px)}}
     .app-header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24px;height:64px;display:flex;align-items:center;gap:16px;position:sticky;top:0;z-index:100;box-shadow:var(--shadow-sm);backdrop-filter:blur(12px);background:rgba(255,255,255,0.9)}
-    .app-logo{width:56px;height:56px;flex-shrink:0;filter:drop-shadow(0 4px 8px rgba(4,84,239,0.25))}
+    .app-logo{width:42px;height:42px;flex-shrink:0;filter:drop-shadow(0 4px 8px rgba(4,84,239,0.25))}
     .app-logo svg{width:100%;height:100%;display:block}
     .app-brand{font-family:'SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:16px;font-weight:700;color:#000000;letter-spacing:-0.3px;line-height:1.2}
     .app-brand span{display:block;font-family:'SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:9px;color:#000000;letter-spacing:2.5px;font-weight:600;text-transform:uppercase;opacity:0.6}
-    .app-header-actions{display:flex;align-items:center;gap:12px;margin-left:auto}
-    .header-icon-btn{background:transparent;border:none;cursor:pointer;color:var(--text-secondary);font-size:20px;padding:8px;border-radius:6px;transition:all 0.2s;display:flex;align-items:center;justify-content:center}
-    .header-icon-btn:hover{background:var(--primary-ghost);color:var(--primary)}
-    .search-box{display:flex;align-items:center;background:var(--hover-bg);border:1px solid var(--border);border-radius:6px;padding:6px 12px;gap:8px;width:200px}
-    .search-box input{background:transparent;border:none;outline:none;font-size:13px;font-family:inherit;color:var(--text-primary);flex:1}
-    .search-box input::placeholder{color:var(--text-tertiary)}
-    .app-header-info{text-align:right}
+    .app-header-info{margin-left:auto;text-align:right}
     .app-header-info .date{font-size:13px;font-weight:600;color:var(--text-primary)}
     .app-header-info .subtitle{font-size:10px;color:var(--text-tertiary);letter-spacing:0.5px}
     .page-container{max-width:1440px;margin:0 auto;padding:28px 28px 40px;width:100%;flex:1}
@@ -58,31 +47,32 @@
     .btn{padding:10px 20px;border:none;border-radius:var(--radius-sm);font-weight:600;cursor:pointer;font-size:13px;transition:all 0.2s ease;font-family:inherit;display:inline-flex;align-items:center;gap:7px;white-space:nowrap;text-decoration:none;letter-spacing:-0.2px}
     .btn-primary{background:var(--primary);color:#fff;box-shadow:0 2px 8px rgba(4,84,239,0.2)}.btn-primary:hover{background:var(--primary-dark);transform:translateY(-1px);box-shadow:0 6px 16px rgba(4,84,239,0.3)}
     .btn-outline{background:transparent;border:1px solid var(--border);color:var(--text-secondary)}.btn-outline:hover{border-color:var(--primary);color:var(--primary);background:var(--primary-ghost)}
+    .btn-success{background:var(--success);color:#fff}.btn-success:hover{background:rgba(0,168,107,0.85)}
+    .btn:disabled{opacity:0.5;cursor:not-allowed}
     .btn-sm{padding:6px 14px;font-size:12px;border-radius:6px;font-weight:600}
     .quick-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:28px}
-    .quick-stat{background:var(--surface);border-radius:var(--radius-md);padding:18px 22px;border:1px solid var(--border);box-shadow:var(--shadow-sm);transition:all 0.2s}
-    .quick-stat[onclick]:hover{box-shadow:var(--shadow-md);border-color:var(--primary);cursor:pointer}
-    .quick-stat[onclick]:active{transform:scale(0.98)}
+    .quick-stat{background:var(--surface);border-radius:var(--radius-md);padding:18px 22px;border:1px solid var(--border);box-shadow:var(--shadow-sm);transition:box-shadow 0.2s}
+    .quick-stat:hover{box-shadow:var(--shadow-md)}
     .quick-stat-label{font-size:11px;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-bottom:6px}
-    .quick-stat-value{font-size:28px;font-weight:700;letter-spacing:-0.5px;line-height:1.2;color:#2A2A2A}
+    .quick-stat-value{font-size:28px;font-weight:700;letter-spacing:-0.5px;line-height:1.2}
     .quick-stat-sub{font-size:11px;color:var(--text-tertiary);margin-top:4px}
-    .horas-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;margin-bottom:28px}
+    .horas-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(400px,1fr));gap:20px;margin-bottom:28px}
     .colaborador-card{background:var(--surface);border-radius:var(--radius-lg);border:1px solid var(--border);overflow:hidden;transition:all 0.25s ease;box-shadow:var(--shadow-sm);display:flex;flex-direction:column}
     .colaborador-card:hover{box-shadow:var(--shadow-md);transform:translateY(-2px);border-color:#d0d8e8}
     .colaborador-card.inativo{opacity:0.65;filter:grayscale(0.3)}
     .colaborador-card.transferido{opacity:0.75;border-left:3px solid #E65100}
-    .colab-card-header{padding:14px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);background:var(--surface);flex-wrap:wrap}
-    .colab-card-body{padding:6px 16px 4px;flex:1;display:flex;flex-direction:column}
-    .colab-card-footer{padding:8px 16px;border-top:1px solid var(--border);display:flex;gap:6px;justify-content:flex-end;flex-wrap:wrap;background:#fafbfc}
-    .colab-avatar{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:#fff;flex-shrink:0;box-shadow:0 4px 8px rgba(0,0,0,0.08)}
+    .colab-card-header{padding:18px 22px;display:flex;align-items:center;gap:14px;border-bottom:1px solid var(--border);background:var(--surface);flex-wrap:wrap}
+    .colab-card-body{padding:8px 22px 4px;flex:1;display:flex;flex-direction:column}
+    .colab-card-footer{padding:12px 22px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;background:#fafbfc}
+    .colab-avatar{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;color:#fff;flex-shrink:0;box-shadow:0 4px 8px rgba(0,0,0,0.08)}
     .colab-info{flex:1;min-width:0}
-    .colab-name{font-size:13px;font-weight:700;display:flex;align-items:center;gap:6px;flex-wrap:wrap;color:var(--text-primary)}
-    .colab-meta{font-size:12px;color:var(--text-secondary);margin-top:2px;font-weight:400}
+    .colab-name{font-size:15px;font-weight:700;display:flex;align-items:center;gap:8px;flex-wrap:wrap;color:var(--text-primary)}
+    .colab-meta{font-size:12px;color:var(--text-tertiary);margin-top:3px}
     .colab-id{font-size:9px;color:var(--primary);opacity:0.7;margin-left:4px;font-weight:500;font-family:'SF Mono','Menlo','Monaco',monospace;letter-spacing:0.5px;cursor:pointer}
     .colab-id:hover{opacity:1;text-decoration:underline}
-    .colab-horas-list{display:flex;flex-direction:column;gap:1px;max-height:220px;overflow-y:auto;margin:6px 0 4px;padding-right:2px}
+    .colab-horas-list{display:flex;flex-direction:column;gap:2px;max-height:280px;overflow-y:auto;margin:8px 0 4px;padding-right:2px}
     .colab-horas-list::-webkit-scrollbar{width:4px}.colab-horas-list::-webkit-scrollbar-track{background:transparent}.colab-horas-list::-webkit-scrollbar-thumb{background:#d1d5db;border-radius:10px}
-    .colab-btn-registro{width:100%;justify-content:center;margin-bottom:4px;font-size:11px;padding:6px 12px;font-weight:600;letter-spacing:0.3px}
+    .colab-btn-registro{width:100%;justify-content:center;margin-bottom:4px;font-size:12px;padding:8px 16px;font-weight:600;letter-spacing:0.3px}
     .hora-row{display:grid;grid-template-columns:72px 42px 1fr 20px;align-items:center;gap:6px;padding:7px 10px;border-radius:6px;font-size:12px;transition:background 0.15s;cursor:default}
     .hora-row:hover{background:var(--hover-bg)}.hora-row:nth-child(even){background:#FAFBFC}.hora-row:nth-child(even):hover{background:var(--hover-bg)}
     .hora-val{font-weight:600;display:flex;align-items:center;gap:5px;flex-wrap:wrap}
@@ -98,6 +88,9 @@
     .badge-ativo{display:none}
     .badge-inativo{background:#FFEBEE;color:#B71C1C}
     .badge-transferido{background:#FFF3E0;color:#E65100}
+    .info-box{background:#F4F7FC;border:1px solid #DDE4F0;border-radius:var(--radius-sm);padding:14px 20px;margin-bottom:24px;font-size:12px;color:var(--text-secondary);display:flex;align-items:flex-start;gap:14px;line-height:1.6}
+    .info-box-icon{font-size:18px;flex-shrink:0;margin-top:1px;color:var(--primary)}
+    .info-box strong{color:var(--primary);font-weight:600}
     .modal-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.45);z-index:1000;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
     .modal-overlay.show{display:flex}
     .modal{background:#fff;border-radius:var(--radius-lg);padding:28px 32px;width:500px;max-width:94vw;max-height:88vh;overflow-y:auto;box-shadow:var(--shadow-lg);animation:modalIn 0.25s cubic-bezier(0.16,1,0.3,1)}
@@ -113,25 +106,15 @@
     .form-group .helper-text{font-size:11px;color:var(--text-tertiary);margin-top:5px;line-height:1.4}
     .form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
     .empty-state{text-align:center;padding:70px 20px;color:var(--text-tertiary)}
-    .empty-state-icon{width:64px;height:64px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:300;margin:0 auto 16px;opacity:0.8}
+    .empty-state-icon{font-size:56px;margin-bottom:16px;opacity:0.6;filter:grayscale(0.3)}
     .empty-state-text{font-size:16px;font-weight:600;margin-bottom:8px;color:var(--text-secondary)}
     .empty-state-sub{font-size:13px;margin-bottom:24px;color:var(--text-tertiary)}
+    .filter-tags{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+    .filter-tag{padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--surface);color:var(--text-secondary);transition:all 0.2s}
+    .filter-tag.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+    .filter-tag:hover:not(.active){background:var(--primary-ghost);border-color:var(--primary);color:var(--primary)}
     .app-footer{text-align:center;padding:20px;color:var(--text-tertiary);font-size:11px;border-top:1px solid var(--border);margin-top:10px;letter-spacing:0.2px}
-    .tab-btn{transition:all 0.2s ease}
-    .tab-btn.active{color:var(--primary);border-bottom-color:var(--primary)!important;font-weight:700}
-    .ficha-section{margin-bottom:20px}
-    .ficha-label{font-size:11px;font-weight:600;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;display:block}
-    .ficha-value{font-size:13px;color:var(--text-primary);font-weight:500;padding:10px 14px;background:var(--primary-ghost);border-radius:6px;border:1px solid var(--primary-light)}
-    .ficha-input{width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:6px;font-size:13px;font-family:inherit;outline:none;transition:border 0.2s}
-    .ficha-input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(4,84,239,0.08)}
-    .movimentacao-item{padding:14px;background:var(--primary-ghost);border-left:3px solid var(--primary);border-radius:6px;margin-bottom:12px}
-    .movimentacao-date{font-size:11px;font-weight:600;color:var(--primary);text-transform:uppercase}
-    .movimentacao-desc{font-size:13px;color:var(--text-primary);font-weight:600;margin:6px 0 4px}
-    .movimentacao-detail{font-size:12px;color:var(--text-secondary)}
-    .skill-badge{display:inline-flex;align-items:center;padding:6px 12px;background:var(--primary);color:#fff;border-radius:20px;font-size:12px;font-weight:600;margin:4px 4px 4px 0}
-    .skill-input-group{display:flex;gap:8px;margin-bottom:12px}
-    .skill-input-group input{flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:6px;font-size:12px}
-    .skill-input-group button{padding:8px 12px;background:var(--primary);color:#fff;border:none;border-radius:6px;cursor:pointer;font-weight:600}
+    .colab-card-minimized{padding:16px 18px;display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center}
     @media(max-width:768px){.horas-grid{grid-template-columns:1fr}.top-bar{flex-direction:column;align-items:flex-start;gap:14px}.top-bar-actions{margin-left:0;width:100%;flex-wrap:wrap}.quick-stats{grid-template-columns:repeat(2,1fr)}.page-container{padding:20px 16px}.modal{padding:22px 20px}.form-row{grid-template-columns:1fr}}
   </style>
 </head>
@@ -145,32 +128,11 @@
         <path d="M97.24 403.58L93.5 400.15l-.25-118.32c-.3-136.75-1.6-121.77 11.23-129.05 4.15-2.35 13.31-7.69 20.36-11.86 7.05-4.17 13.55-7.85 14.44-8.2.89-.34 6.03-3.28 11.42-6.53 11.5-6.93 26.68-15 23.8-12.66-1.1.9-4.02 2.72-6.5 4.06-2.48 1.33-5.18 2.86-6 3.39-3.78 2.43-16.07 9.62-21.5 12.59-3.3 1.8-11.4 6.44-18 10.31-6.6 3.87-14.55 8.44-17.66 10.17-3.12 1.72-6.72 4.26-8 5.62l-2.34 2.49v237.48l3.84 2.42 3.85 3.42 30.84-.23 30.84-.24 3.01-2.88 3-2.88.31-50.12c.36-59.05-.26-55.54 10.95-61.19 3.78-1.9 9.37-5.06 12.44-7.03 3.07-1.96 5.79-3.36 6.04-3.11.5.49-16.14 10.71-17.44 10.71-1.48 0-7.63 5.04-8.87 7.28-.94 1.67-1.25 14.19-1.27 51-.04 52.92-.07 53.24-5.55 57.55-2.7 2.12-3.46 2.17-34.14 2.17h-31.38l-3.73-3.42z" fill="#2E60BE"/>
       </svg>
     </div>
-    <div class="app-brand">HIGH PRO <span style="font-weight:400;font-size:14px;letter-spacing:0.5px">Solutions</span><span style="font-size:9px;letter-spacing:2.5px;text-transform:uppercase;opacity:0.6;display:block">Controlo de Horas</span></div>
-    <div class="app-header-actions">
-      <div class="search-box">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="11" cy="11" r="8"></circle>
-          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-        </svg>
-        <input type="text" id="searchColab" placeholder="Buscar colaborador...">
-      </div>
-      <button class="header-icon-btn" title="Contacto" onclick="HORAS.abrirContato()">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
-        </svg>
-      </button>
-      <button class="header-icon-btn" title="Ajuda" onclick="HORAS.abrirAjuda()">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="10"></circle>
-          <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
-          <path d="M12 17h.01"></path>
-        </svg>
-      </button>
-      <div class="app-header-info"><div class="date" id="headerDate"></div><div class="subtitle">SaaS v2.0</div></div>
-    </div>
+    <div class="app-brand">HIGH PRO<span>Controlo de Horas</span></div>
+    <div class="app-header-info"><div class="date" id="headerDate"></div><div class="subtitle">SaaS v2.0 — 28.06.2026</div></div>
   </header>
   <main class="page-container" id="mainContent"></main>
-  <footer class="app-footer">HIGH PRO Solutions · Controlo de Horas · &copy; 2026 · Todos os direitos reservados</footer>
+  <footer class="app-footer">HIGH PRO Solutions · Controlo de Horas · Atualizado 28.06.2026</footer>
 </div>
 
 <div class="modal-overlay" id="modalHoras">
@@ -178,7 +140,7 @@
     <div class="form-group"><label>Data</label><input type="date" id="lhData"></div>
     <div class="form-group"><label>Tipo de Registo</label><select id="lhTipo" onchange="HORAS.toggleHorasInput()"><option value="horas">Horas Trabalhadas</option><option value="falta">Falta</option><option value="feriado">Feriado</option><option value="atestado">Atestado Médico</option></select></div>
     <div class="form-group" id="lhHorasGroup"><label>Quantidade de Horas</label><input type="number" id="lhHoras" value="8" min="0.5" max="24" step="0.5"><div class="helper-text" id="lhExtraInfo" style="display:none"></div></div>
-    <div class="form-group" id="lhCategoriaGroup" style="display:none"><label>Tipo de Atestado</label><select id="lhCategoriaAtestado" onchange="HORAS.atualizarObsCategoria()"><option value="">Selecione...</option><optgroup label="Doenças Gerais"><option>Doença Geral</option><option>Gripe</option><option>COVID-19</option></optgroup></select></div>
+    <div class="form-group" id="lhCategoriaGroup" style="display:none"><label>Tipo de Atestado</label><select id="lhCategoriaAtestado" onchange="HORAS.atualizarObsCategoria()"><option value="">Selecione...</option><optgroup label="Doenças Gerais"><option>Doença Geral</option><option>Gripe</option><option>COVID-19</option><option>Infeção Respiratória</option><option>Gastroenterite</option><option>Enxaqueca</option><option>Febre</option></optgroup><optgroup label="Lesões e Acidentes"><option>Acidente de Trabalho</option><option>Acidente Pessoal</option><option>Lesão Muscular</option><option>Fraturas</option><option>Lombalgia</option></optgroup><optgroup label="Saúde Mental"><option>Burnout</option><option>Ansiedade</option><option>Depressão</option><option>Stress Laboral</option></optgroup><optgroup label="Crónicos"><option>Doença Crónica</option><option>Hipertensão</option><option>Diabetes</option><option>Asma</option></optgroup><optgroup label="Outros"><option>Consulta Médica</option><option>Exames Médicos</option><option>Cirurgia</option><option>Fisioterapia</option><option>Acomp. Familiar</option><option>Outro</option></optgroup></select></div>
     <div class="form-group"><label>Observação</label><textarea id="lhObs" rows="2" placeholder="Detalhes adicionais..."></textarea></div>
     <div class="modal-actions"><button class="btn btn-outline" onclick="HORAS.closeModal('modalHoras')">Cancelar</button><button class="btn btn-primary" onclick="HORAS.salvarHoras()">Lançar Registo</button></div>
   </div>
@@ -186,79 +148,127 @@
 
 <div class="modal-overlay" id="modalColab">
   <div class="modal"><div class="modal-title" id="modalColabTitle">Novo Colaborador</div>
-    <div class="form-group"><label>ID</label><input type="text" id="newId" placeholder="ID do colaborador" disabled></div>
     <div class="form-group"><label>Nome</label><input type="text" id="newNome" placeholder="Ex: João Silva"></div>
-    <div class="form-group"><label>Cargo</label><select id="newCargo"><option value="">Selecione uma profissão</option><option value="Operário">Operário</option><option value="Soldador">Soldador</option></select></div>
+    <div class="form-group"><label>Cargo</label><input type="text" id="newCargo" placeholder="Ex: Operário"></div>
     <div class="form-group"><label>Tipo de Contrato</label><select id="newTipoContrato" onchange="HORAS.toggleContractFields()"><option value="incerto">Termo Incerto</option><option value="fixo">Fixo de Portugal</option></select></div>
     <div class="form-group" id="valorHoraGroup"><label>Valor/Hora (€)</label><input type="number" id="newValorHora" value="12" step="0.5" min="1"></div>
     <div class="form-group" id="vencimentoGroup" style="display:none"><label>Vencimento Mensal (€)</label><input type="number" id="newVencimentoMensal" value="820" step="10" min="100"></div>
-    <div class="form-group"><label>Status</label><select id="newStatus"><option value="ativo">Ativo</option><option value="inativo">Inativo</option></select></div>
+    <div class="form-group"><label>Status</label><select id="newStatus" onchange="HORAS.toggleStatusFields()"><option value="ativo">Ativo</option><option value="inativo">Inativo</option><option value="transferido">Transferido</option></select><div class="helper-text">Define a situação atual do colaborador.</div></div>
+    <div class="form-group" id="motivoInativoGroup" style="display:none"><label>Motivo da Inativação</label><select id="newMotivoInativo"><option value="">Selecione o motivo...</option><option value="Despedimento">Despedimento</option><option value="Demissão">Demissão</option><option value="Fim de Contrato">Fim de Contrato</option><option value="Reforma">Reforma</option><option value="Falecimento">Falecimento</option><option value="Outro">Outro</option></select></div>
+    <div class="form-group" id="dataTransferenciaGroup" style="display:none"><label>Data de Transferência</label><input type="date" id="newDataTransferencia"></div>
+    <div class="form-group" id="localTransferenciaGroup" style="display:none"><label>Local de Transferência</label><input type="text" id="newLocalTransferencia" placeholder="Ex: Obra Porto, Filial Lisboa..."></div>
     <div class="form-group"><label>Data de Início</label><input type="date" id="newDataInicio"></div>
     <div class="form-group"><label>Cor</label><input type="color" id="newCor" value="#0454EF"></div>
     <div class="modal-actions"><button class="btn btn-outline" onclick="HORAS.closeModal('modalColab')">Cancelar</button><button class="btn btn-primary" id="btnSalvarColab" onclick="HORAS.salvarColaborador()">Guardar</button></div>
   </div>
 </div>
 
-<div class="modal-overlay" id="modalContato">
-  <div class="modal"><div class="modal-title">Contacte-nos</div>
-    <div class="modal-subtitle">Tem dúvidas ou precisa de suporte?</div>
-    <div class="form-group"><label>E-mail</label><input type="email" value="support@highpro.pt" readonly style="background:#f5f5f5"></div>
-    <div class="modal-actions"><button class="btn btn-primary" onclick="HORAS.closeModal('modalContato')">Fechar</button></div>
+<div class="modal-overlay" id="modalExportarGeral">
+  <div class="modal"><div class="modal-title">Exportar Registo Geral</div><div class="modal-subtitle">Exporte os registos de vários colaboradores com filtros.</div>
+    <div class="form-group"><label>Formato</label><select id="dlFormato" onchange="HORAS.toggleFormatoGeral()"><option value="pdf">PDF</option><option value="excel">Excel (.xls)</option></select></div>
+    <div class="form-group"><label>Período</label><div class="form-row"><div><input type="date" id="dlDataInicio" style="width:100%"><span class="helper-text">Início</span></div><div><input type="date" id="dlDataFim" style="width:100%"><span class="helper-text">Fim</span></div></div></div>
+    <div class="form-group"><label>Tipo de Contrato</label><select id="dlTipoContrato"><option value="todos">Todos</option><option value="fixo">Fixo Portugal</option><option value="incerto">Termo Incerto</option></select></div>
+    <div class="form-group" id="dlValoresGroup"><label>Valores</label><select id="dlExibirValores"><option value="com">Com valores (€)</option><option value="sem">Sem valores</option></select></div>
+    <div class="modal-actions"><button class="btn btn-outline" onclick="HORAS.closeModal('modalExportarGeral')">Cancelar</button><button class="btn btn-primary" onclick="HORAS.executarExportacaoGeral()">Exportar</button></div>
   </div>
 </div>
 
-<div class="modal-overlay" id="modalAjuda">
-  <div class="modal"><div class="modal-title">Ajuda</div>
-    <p>Sistema HIGH PRO - Controlo de Horas 24/7 com sincronização em nuvem</p>
-    <div class="modal-actions"><button class="btn btn-primary" onclick="HORAS.closeModal('modalAjuda')">Fechar</button></div>
+<div class="modal-overlay" id="modalExportarIndividual">
+  <div class="modal"><div class="modal-title" id="modalExportIndividualTitle">Exportar Registo</div><div class="modal-subtitle" id="modalExportIndividualSub"></div>
+    <div class="form-group"><label>Formato</label><select id="dlIndFormato" onchange="HORAS.toggleFormatoIndividual()"><option value="pdf">PDF</option><option value="excel">Excel (.xls)</option></select></div>
+    <div class="form-group"><label>Período</label><div class="form-row"><div><input type="date" id="dlIndDataInicio" style="width:100%"><span class="helper-text">Início</span></div><div><input type="date" id="dlIndDataFim" style="width:100%"><span class="helper-text">Fim</span></div></div></div>
+    <div class="form-group" id="dlIndValoresGroup"><label>Valores</label><select id="dlIndExibirValores"><option value="com">Com valores (€)</option><option value="sem">Sem valores</option></select></div>
+    <div class="modal-actions"><button class="btn btn-outline" onclick="HORAS.closeModal('modalExportarIndividual')">Cancelar</button><button class="btn btn-primary" onclick="HORAS.executarExportacaoIndividual()">Exportar</button></div>
   </div>
 </div>
 
 <script>
 const TURNO_NORMAL=8,ACRESCIMO_50=0.5,ACRESCIMO_100=1.0;
-const FERIADOS=['2026-01-01','2026-04-25','2026-05-01','2026-06-10'];
+const FERIADOS=['2026-01-01','2026-04-25','2026-05-01','2026-06-10','2026-06-13','2026-06-24','2026-08-15','2026-12-08','2026-12-25'];
 const DIAS_SEMANA=['DOM','SEG','TER','QUA','QUI','SEX','SAB'];
 
-function sanitize(str){const d=document.createElement('div');d.textContent=str;return d.innerHTML;}
+function sanitize(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
 function formatDate(iso){if(!iso)return'—';const[y,m,d]=iso.split('-');return d+'/'+m+'/'+y;}
 function todayISO(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 function getDow(iso){const[y,m,d]=iso.split('-');return new Date(+y,+m-1,+d).getDay();}
 function isFeriado(d){return FERIADOS.includes(d);}
+function isWeekend(d){return[0,6].includes(getDow(d));}
 function initials(n){return n.split(' ').map(x=>x[0]).join('').substring(0,2).toUpperCase();}
-function formatCurrency(v){return'€'+v.toFixed(2).replace('.',',');}
-function toast(msg,tipo){tipo=tipo||'info';const c=document.getElementById('toastContainer');const el=document.createElement('div');el.className='toast '+tipo;el.innerHTML=msg;c.appendChild(el);setTimeout(()=>el.remove(),2800);}
+function toast(msg,tipo='info'){const c=document.getElementById('toastContainer');const el=document.createElement('div');el.className='toast '+tipo;el.textContent=msg;c.appendChild(el);setTimeout(()=>{el.classList.add('fade-out');setTimeout(()=>el.remove(),250)},2800);}
+function gerarIdUnico(){const ano=new Date().getFullYear().toString().slice(-2);const existentes=HORAS.colaboradores.filter(c=>c.id.startsWith('HP-'+ano));let max=0;existentes.forEach(c=>{const num=parseInt(c.id.split('-')[2])||0;if(num>max)max=num;});return'HP-'+ano+'-'+String(max+1).padStart(3,'0');}
 
 const HORAS={
+  currentColabId:null,currentFilter:'todos',currentStatusFilter:'todos',editingColabId:null,expandedCards:{},viewMode:'ativos',
   colaboradores:JSON.parse(localStorage.getItem('hp_colab_saas_v2')||'null')||[
-    {id:'HP-26-002',nome:'Jose Mauro',cargo:'Serralheiro 2ª',tipoContrato:'fixo',valorHora:0,vencimento:820,cor:'#0454EF',ativo:true,inicio:'2026-05-26',status:'ativo',motivoInativo:'',dataTransferencia:'',localTransferencia:''},
-    {id:'HP-26-003',nome:'Rodrigo Gomes',cargo:'Soldador',tipoContrato:'incerto',valorHora:15,vencimento:0,cor:'#D32F2F',ativo:true,inicio:'2026-04-01',status:'ativo',motivoInativo:'',dataTransferencia:'',localTransferencia:''},
-    {id:'HP-26-004',nome:'Cicero',cargo:'Serralheiro',tipoContrato:'incerto',valorHora:10,vencimento:0,cor:'#FF6B6B',ativo:true,inicio:'2026-06-02',status:'transferido',motivoInativo:'',dataTransferencia:'2026-06-26',localTransferencia:'Lisboa'},
-    {id:'HP-26-005',nome:'Marco Aurelio',cargo:'Serralheiro',tipoContrato:'incerto',valorHora:10,vencimento:0,cor:'#FFD93D',ativo:true,inicio:'2026-06-15',status:'transferido',motivoInativo:'',dataTransferencia:'2026-06-22',localTransferencia:'Ferrol - Navantia'}
+    {id:'HP-26-001',nome:'Mauro',cargo:'Operário',tipoContrato:'fixo',valorHora:0,vencimento:820,cor:'#0454EF',ativo:true,inicio:'2026-05-26',status:'ativo',motivoInativo:'',dataTransferencia:'',localTransferencia:''},
+    {id:'HP-26-002',nome:'Rodrigo',cargo:'Operário',tipoContrato:'incerto',valorHora:12,vencimento:0,cor:'#D32F2F',ativo:true,inicio:'2026-05-26',status:'ativo',motivoInativo:'',dataTransferencia:'',localTransferencia:''},
+    {id:'HP-26-003',nome:'Wilder',cargo:'Operário',tipoContrato:'incerto',valorHora:12,vencimento:0,cor:'#00A86B',ativo:true,inicio:'2026-06-02',status:'ativo',motivoInativo:'',dataTransferencia:'',localTransferencia:''}
   ],
   horas:JSON.parse(localStorage.getItem('hp_horas_saas_v2')||'null')||{
-    'HP-26-002':[{data:'2026-06-01',tipo:'horas',qtd:9,obs:''},{data:'2026-06-02',tipo:'horas',qtd:10,obs:''},{data:'2026-06-03',tipo:'horas',qtd:10,obs:''},{data:'2026-06-05',tipo:'horas',qtd:10,obs:''},{data:'2026-06-06',tipo:'horas',qtd:8,obs:'Sábado'},{data:'2026-06-08',tipo:'horas',qtd:9,obs:''},{data:'2026-06-09',tipo:'horas',qtd:12,obs:''},{data:'2026-06-11',tipo:'horas',qtd:9,obs:''},{data:'2026-06-15',tipo:'horas',qtd:9,obs:''},{data:'2026-06-16',tipo:'horas',qtd:10,obs:''},{data:'2026-06-17',tipo:'atestado',qtd:0,obs:'Febre alta',categoria:'Gripe'},{data:'2026-06-18',tipo:'horas',qtd:10,obs:''},{data:'2026-06-19',tipo:'horas',qtd:9,obs:''},{data:'2026-06-22',tipo:'horas',qtd:9,obs:''},{data:'2026-06-23',tipo:'horas',qtd:8,obs:''}],
-    'HP-26-003':[{data:'2026-05-26',tipo:'horas',qtd:8,obs:''},{data:'2026-05-27',tipo:'horas',qtd:8,obs:''},{data:'2026-05-28',tipo:'horas',qtd:8,obs:''},{data:'2026-05-29',tipo:'horas',qtd:8,obs:''},{data:'2026-06-01',tipo:'horas',qtd:8,obs:''},{data:'2026-06-02',tipo:'horas',qtd:8,obs:''},{data:'2026-06-03',tipo:'falta',qtd:0,obs:''},{data:'2026-06-04',tipo:'horas',qtd:8,obs:''},{data:'2026-06-05',tipo:'horas',qtd:4,obs:'saiu cedo motivo [ viajem ]'},{data:'2026-06-08',tipo:'falta',qtd:0,obs:''},{data:'2026-06-09',tipo:'falta',qtd:0,obs:''},{data:'2026-06-10',tipo:'falta',qtd:0,obs:''},{data:'2026-06-11',tipo:'falta',qtd:0,obs:''},{data:'2026-06-12',tipo:'falta',qtd:0,obs:''},{data:'2026-06-15',tipo:'horas',qtd:9,obs:''},{data:'2026-06-16',tipo:'horas',qtd:10,obs:''},{data:'2026-06-17',tipo:'falta',qtd:0,obs:'AIMA'},{data:'2026-06-18',tipo:'horas',qtd:3,obs:''},{data:'2026-06-19',tipo:'horas',qtd:10,obs:''},{data:'2026-06-20',tipo:'horas',qtd:10,obs:''},{data:'2026-06-22',tipo:'falta',qtd:0,obs:'deslocamento ferrol'},{data:'2026-06-23',tipo:'falta',qtd:0,obs:'retorno pavilhão'},{data:'2026-06-24',tipo:'horas',qtd:8,obs:''},{data:'2026-06-25',tipo:'horas',qtd:10,obs:''}],
-    'HP-26-004':[{data:'2026-06-02',tipo:'horas',qtd:10,obs:''},{data:'2026-06-03',tipo:'horas',qtd:10,obs:''},{data:'2026-06-04',tipo:'horas',qtd:8,obs:''},{data:'2026-06-05',tipo:'horas',qtd:7,obs:'saida antecipada  : viagem'},{data:'2026-06-08',tipo:'horas',qtd:10,obs:''},{data:'2026-06-09',tipo:'horas',qtd:10,obs:''},{data:'2026-06-10',tipo:'horas',qtd:10,obs:''},{data:'2026-06-11',tipo:'horas',qtd:10,obs:''},{data:'2026-06-12',tipo:'horas',qtd:7,obs:'saida antecipada  : viagem'},{data:'2026-06-15',tipo:'horas',qtd:10,obs:''},{data:'2026-06-16',tipo:'horas',qtd:10,obs:''},{data:'2026-06-17',tipo:'horas',qtd:10,obs:''},{data:'2026-06-18',tipo:'horas',qtd:10,obs:''},{data:'2026-06-19',tipo:'horas',qtd:10,obs:''},{data:'2026-06-20',tipo:'horas',qtd:10,obs:''},{data:'2026-06-21',tipo:'horas',qtd:10,obs:''},{data:'2026-06-22',tipo:'horas',qtd:10,obs:''},{data:'2026-06-23',tipo:'horas',qtd:10,obs:''},{data:'2026-06-24',tipo:'horas',qtd:10,obs:''},{data:'2026-06-25',tipo:'horas',qtd:10,obs:''},{data:'2026-06-26',tipo:'horas',qtd:7,obs:'transferido : Lisboa'}],
-    'HP-26-005':[{data:'2026-06-15',tipo:'horas',qtd:10,obs:''},{data:'2026-06-16',tipo:'horas',qtd:10,obs:''},{data:'2026-06-17',tipo:'horas',qtd:8,obs:''},{data:'2026-06-18',tipo:'horas',qtd:10,obs:''},{data:'2026-06-19',tipo:'horas',qtd:10,obs:''},{data:'2026-06-20',tipo:'horas',qtd:6,obs:''}]
+    'HP-26-001':[{data:'2026-06-01',tipo:'horas',qtd:9,obs:''},{data:'2026-06-02',tipo:'horas',qtd:10,obs:''},{data:'2026-06-03',tipo:'horas',qtd:10,obs:''},{data:'2026-06-05',tipo:'horas',qtd:10,obs:''},{data:'2026-06-08',tipo:'horas',qtd:9,obs:''},{data:'2026-06-09',tipo:'horas',qtd:12,obs:''},{data:'2026-06-11',tipo:'horas',qtd:9,obs:''},{data:'2026-06-12',tipo:'horas',qtd:11,obs:''},{data:'2026-06-15',tipo:'horas',qtd:9,obs:''},{data:'2026-06-16',tipo:'horas',qtd:10,obs:''},{data:'2026-06-18',tipo:'horas',qtd:10,obs:''},{data:'2026-06-19',tipo:'horas',qtd:9,obs:''},{data:'2026-06-22',tipo:'horas',qtd:9,obs:''},{data:'2026-06-23',tipo:'horas',qtd:8,obs:''},{data:'2026-06-24',tipo:'horas',qtd:10,obs:''}],
+    'HP-26-002':[{data:'2026-06-01',tipo:'horas',qtd:8,obs:''},{data:'2026-06-02',tipo:'horas',qtd:8,obs:''},{data:'2026-06-04',tipo:'horas',qtd:8,obs:''},{data:'2026-06-05',tipo:'horas',qtd:4,obs:'Saiu cedo'},{data:'2026-06-15',tipo:'horas',qtd:9,obs:''},{data:'2026-06-16',tipo:'horas',qtd:10,obs:''},{data:'2026-06-18',tipo:'horas',qtd:2,obs:''},{data:'2026-06-19',tipo:'horas',qtd:10,obs:''},{data:'2026-06-24',tipo:'horas',qtd:8,obs:''},{data:'2026-06-25',tipo:'horas',qtd:10,obs:''}],
+    'HP-26-003':[{data:'2026-06-02',tipo:'horas',qtd:10,obs:''},{data:'2026-06-03',tipo:'horas',qtd:10,obs:''},{data:'2026-06-04',tipo:'horas',qtd:8,obs:''},{data:'2026-06-05',tipo:'horas',qtd:7,obs:''},{data:'2026-06-08',tipo:'horas',qtd:10,obs:''},{data:'2026-06-09',tipo:'horas',qtd:10,obs:''},{data:'2026-06-11',tipo:'horas',qtd:10,obs:''},{data:'2026-06-12',tipo:'horas',qtd:7,obs:''},{data:'2026-06-15',tipo:'horas',qtd:10,obs:''},{data:'2026-06-16',tipo:'horas',qtd:10,obs:''},{data:'2026-06-17',tipo:'horas',qtd:10,obs:''},{data:'2026-06-18',tipo:'horas',qtd:10,obs:''},{data:'2026-06-19',tipo:'horas',qtd:10,obs:''},{data:'2026-06-22',tipo:'horas',qtd:10,obs:''},{data:'2026-06-23',tipo:'horas',qtd:10,obs:''},{data:'2026-06-24',tipo:'horas',qtd:10,obs:''},{data:'2026-06-25',tipo:'horas',qtd:10,obs:''}]
   },
-  save(){localStorage.setItem('hp_colab_saas_v2',JSON.stringify(this.colaboradores));localStorage.setItem('hp_horas_saas_v2',JSON.stringify(this.horas));fetch('/api/dados',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({colaboradores:this.colaboradores,horas:this.horas})}).then(r=>r.json()).then(()=>{toast('✅ Sincronizado','success');}).catch(e=>{console.error('Erro:',e);toast('⚠️ Erro ao sincronizar','warning');});},
+
+  save(){localStorage.setItem('hp_colab_saas_v2',JSON.stringify(this.colaboradores));localStorage.setItem('hp_horas_saas_v2',JSON.stringify(this.horas));},
   openModal(id){document.getElementById(id).classList.add('show');},
   closeModal(id){document.getElementById(id).classList.remove('show');},
-  render(){const ativos=this.colaboradores.filter(c=>c.ativo);const totalHoras=ativos.reduce((s,c)=>s+(this.horas[c.id]||[]).reduce((h,r)=>h+(r.tipo==='horas'?r.qtd:0),0),0);document.getElementById('headerDate').textContent=new Date().toLocaleDateString('pt-PT',{weekday:'long',day:'numeric',month:'long',year:'numeric'});let html=`<div class="top-bar"><h1>Controlo de Horas</h1><p>${ativos.length} colaboradores ativos</p><button class="btn btn-primary" onclick="HORAS.abrirModalColab()">Novo Colaborador</button><button class="btn btn-outline" onclick="HORAS.save()">Guardar</button></div><div class="quick-stats"><div class="quick-stat"><div class="quick-stat-label">Colaboradores</div><div class="quick-stat-value">${ativos.length}</div></div><div class="quick-stat"><div class="quick-stat-label">Total Horas</div><div class="quick-stat-value">${totalHoras}H</div></div></div>`;if(ativos.length===0){html+=`<div class="empty-state"><div class="empty-state-text">Nenhum colaborador</div><button class="btn btn-primary" onclick="HORAS.abrirModalColab()">Adicionar</button></div>`;}else{html+='<div class="horas-grid">';ativos.forEach(c=>{const registos=(this.horas[c.id]||[]).sort((a,b)=>b.data.localeCompare(a.data));let rows='';registos.forEach((h,i)=>{const dow=DIAS_SEMANA[getDow(h.data)];rows+=`<div class="hora-row"><span class="hora-dia">${formatDate(h.data)}</span><span class="hora-dow">${dow}</span><span class="hora-val">${h.qtd}h</span><span class="hora-del" onclick="HORAS.deletarHora('${c.id}',${i})">&times;</span></div>`;});html+=`<div class="colaborador-card"><div class="colab-card-header"><div class="colab-avatar" style="background:${c.cor}">${initials(c.nome)}</div><div class="colab-info"><div class="colab-name">${c.nome} <span class="colab-id">${c.id}</span></div><div class="colab-meta">${c.cargo}</div></div></div><div class="colab-card-body"><button class="btn btn-primary colab-btn-registro" onclick="HORAS.abrirModalHoras('${c.id}')">REGISTRO</button><div class="colab-horas-list">${rows}</div></div></div>`;});html+='</div>';}document.getElementById('mainContent').innerHTML=html;},
-  abrirModalColab(colabId){if(colabId){const c=this.colaboradores.find(x=>x.id===colabId);if(c){document.getElementById('newNome').value=c.nome;document.getElementById('newId').value=c.id;}}this.openModal('modalColab');},
-  abrirModalHoras(colabId){this.currentColabId=colabId;document.getElementById('lhData').value=todayISO();this.openModal('modalHoras');},
-  salvarColaborador(){const n=sanitize(document.getElementById('newNome').value.trim());if(!n){toast('Nome inválido','error');return;}const id='HP-'+new Date().getFullYear().toString().slice(-2)+'-'+String(this.colaboradores.filter(c=>c.id.startsWith('HP-'+new Date().getFullYear().toString().slice(-2))).length+1).padStart(3,'0');this.colaboradores.push({id,nome:n,cargo:document.getElementById('newCargo').value||'Operário',tipoContrato:document.getElementById('newTipoContrato').value,valorHora:parseFloat(document.getElementById('newValorHora').value)||12,vencimento:parseFloat(document.getElementById('newVencimentoMensal').value)||820,cor:document.getElementById('newCor').value,ativo:true,inicio:document.getElementById('newDataInicio').value||todayISO(),status:'ativo'});this.horas[id]=[];this.save();this.closeModal('modalColab');this.render();toast(n+' adicionado','success');},
-  salvarHoras(){const data=document.getElementById('lhData').value,tipo=document.getElementById('lhTipo').value,qtd=tipo==='horas'?parseFloat(document.getElementById('lhHoras').value):0;if(!data){toast('Selecione uma data','error');return;}if(!this.horas[this.currentColabId])this.horas[this.currentColabId]=[];const idx=this.horas[this.currentColabId].findIndex(h=>h.data===data);if(idx>=0){this.horas[this.currentColabId][idx]={data,tipo,qtd,obs:document.getElementById('lhObs').value};}else{this.horas[this.currentColabId].push({data,tipo,qtd,obs:document.getElementById('lhObs').value});}this.save();this.closeModal('modalHoras');this.render();toast('Registo lançado','success');},
-  deletarHora(colabId,idx){if(confirm('Remover?')){this.horas[colabId].splice(idx,1);this.save();this.render();toast('Removido','info');}},
+
+  setFilter(tipo){this.currentFilter=tipo;this.render();},
+  setStatusFilter(tipo){this.currentStatusFilter=tipo;this.render();},
+
+  getFilteredColaboradores(){let cols=this.colaboradores.filter(c=>c.ativo);if(this.currentStatusFilter==='ativo')cols=cols.filter(c=>c.status==='ativo');else if(this.currentStatusFilter==='inativo')cols=cols.filter(c=>c.status==='inativo');else if(this.currentStatusFilter==='transferido')cols=cols.filter(c=>c.status==='transferido');if(this.currentFilter==='todos')return cols;return cols.filter(c=>c.tipoContrato===this.currentFilter);},
+
+  getTotalHoras(id,di,df){return(this.horas[id]||[]).filter(h=>h.tipo==='horas'&&(!di||h.data>=di)&&(!df||h.data<=df)).reduce((s,h)=>s+parseFloat(h.qtd||0),0);},
+
+  toggleStatusFields(){const st=document.getElementById('newStatus').value;document.getElementById('motivoInativoGroup').style.display=(st==='inativo')?'block':'none';document.getElementById('dataTransferenciaGroup').style.display=(st==='transferido')?'block':'none';document.getElementById('localTransferenciaGroup').style.display=(st==='transferido')?'block':'none';},
+
   toggleContractFields(){const t=document.getElementById('newTipoContrato').value;document.getElementById('valorHoraGroup').style.display=(t==='incerto')?'block':'none';document.getElementById('vencimentoGroup').style.display=(t==='fixo')?'block':'none';},
-  toggleHorasInput(){const t=document.getElementById('lhTipo').value;document.getElementById('lhHorasGroup').style.display=(t==='horas')?'block':'none';document.getElementById('lhCategoriaGroup').style.display=(t==='atestado')?'block':'none';},
-  atualizarObsCategoria(){const cat=document.getElementById('lhCategoriaAtestado').value;document.getElementById('lhObs').value=cat;},
-  abrirContato(){this.openModal('modalContato');},
-  abrirAjuda(){this.openModal('modalAjuda');},
-  async init(){await fetch('/api/dados').then(r=>r.json()).then(data=>{if(data.colaboradores){this.colaboradores=data.colaboradores;this.horas=data.horas||{}}this.render();}).catch(()=>this.render());}
+
+  toggleHorasInput(){const tipo=document.getElementById('lhTipo').value;document.getElementById('lhHorasGroup').style.display=(tipo==='horas')?'block':'none';document.getElementById('lhCategoriaGroup').style.display=(tipo==='atestado')?'block':'none';},
+
+  atualizarObsCategoria(){},
+
+  toggleCardExpanded(id){this.expandedCards[id]=!this.expandedCards[id];this.render();},
+
+  setViewMode(mode){this.viewMode=mode;this.render();},
+
+  copiarID(id){const c=this.colaboradores.find(x=>x.id===id);if(!c)return;navigator.clipboard.writeText(c.id).then(()=>toast('ID '+c.id+' copiado!','success')).catch(()=>prompt('Copie:',c.id));},
+
+  abrirModalColab(id){this.editingColabId=id||null;const t=document.getElementById('modalColabTitle'),b=document.getElementById('btnSalvarColab');if(id){const c=this.colaboradores.find(x=>x.id===id);if(!c)return;t.textContent='Editar Colaborador';b.textContent='Atualizar';document.getElementById('newNome').value=c.nome;document.getElementById('newCargo').value=c.cargo||'Operário';document.getElementById('newTipoContrato').value=c.tipoContrato;document.getElementById('newValorHora').value=c.valorHora||12;document.getElementById('newVencimentoMensal').value=c.vencimento||820;document.getElementById('newStatus').value=c.status||'ativo';document.getElementById('newMotivoInativo').value=c.motivoInativo||'';document.getElementById('newDataTransferencia').value=c.dataTransferencia||'';document.getElementById('newLocalTransferencia').value=c.localTransferencia||'';document.getElementById('newDataInicio').value=c.inicio||todayISO();document.getElementById('newCor').value=c.cor||'#0454EF';this.toggleStatusFields();this.toggleContractFields();}else{t.textContent='Novo Colaborador';b.textContent='Guardar';document.getElementById('newNome').value='';document.getElementById('newCargo').value='Operário';document.getElementById('newTipoContrato').value='incerto';document.getElementById('newValorHora').value=12;document.getElementById('newVencimentoMensal').value=820;document.getElementById('newStatus').value='ativo';document.getElementById('newMotivoInativo').value='';document.getElementById('newDataTransferencia').value='';document.getElementById('newLocalTransferencia').value='';document.getElementById('newDataInicio').value=todayISO();document.getElementById('newCor').value='#0454EF';this.toggleStatusFields();this.toggleContractFields();}this.openModal('modalColab');},
+
+  salvarColaborador(){const n=sanitize(document.getElementById('newNome').value.trim());if(!n||n.length<2){toast('Nome inválido','error');return;}const tp=document.getElementById('newTipoContrato').value;const vh=tp==='incerto'?parseFloat(document.getElementById('newValorHora').value)||12:0;const vm=tp==='fixo'?parseFloat(document.getElementById('newVencimentoMensal').value)||820:0;const st=document.getElementById('newStatus').value;if(tp==='incerto'&&vh<=0){toast('Valor/hora > 0','error');return;}if(tp==='fixo'&&vm<=0){toast('Vencimento > 0','error');return;}if(this.editingColabId){const c=this.colaboradores.find(x=>x.id===this.editingColabId);if(!c)return;c.nome=n;c.cargo=sanitize(document.getElementById('newCargo').value.trim()||'Operário');c.tipoContrato=tp;c.valorHora=vh;c.vencimento=vm;c.status=st;c.motivoInativo=document.getElementById('newMotivoInativo').value;c.dataTransferencia=document.getElementById('newDataTransferencia').value;c.localTransferencia=document.getElementById('newLocalTransferencia').value;c.inicio=document.getElementById('newDataInicio').value;c.cor=document.getElementById('newCor').value;toast(n+' atualizado','success');}else{const id=gerarIdUnico();this.colaboradores.push({id,nome:n,cargo:sanitize(document.getElementById('newCargo').value.trim()||'Operário'),tipoContrato:tp,valorHora:vh,vencimento:vm,status:st,motivoInativo:document.getElementById('newMotivoInativo').value,dataTransferencia:document.getElementById('newDataTransferencia').value,localTransferencia:document.getElementById('newLocalTransferencia').value,inicio:document.getElementById('newDataInicio').value,cor:document.getElementById('newCor').value,ativo:true});this.horas[id]=[];toast(n+' adicionado','success');}this.save();this.closeModal('modalColab');this.render();},
+
+  deletarColaborador(id){const c=this.colaboradores.find(x=>x.id===id);if(!c)return;if(!confirm(`Remover ${c.nome} (${c.id})?`))return;this.colaboradores=this.colaboradores.filter(x=>x.id!==id);delete this.horas[id];this.save();toast(c.nome+' removido','info');this.render();},
+
+  arquivarColaborador(id){const c=this.colaboradores.find(x=>x.id===id);if(!c)return;c.arquivado=true;this.save();toast(c.nome+' arquivado','success');this.render();},
+
+  desarquivarColaborador(id){const c=this.colaboradores.find(x=>x.id===id);if(!c)return;c.arquivado=false;c.status='ativo';this.save();toast(c.nome+' ativado novamente','success');this.render();},
+
+  abrirModalHoras(id){this.currentColabId=id;const c=this.colaboradores.find(x=>x.id===id);document.getElementById('modalHorasTitle').textContent=(c?'Lançar Horas — '+c.nome:'Lançar Horas');document.getElementById('lhData').value=todayISO();document.getElementById('lhTipo').value='horas';document.getElementById('lhHoras').value=8;document.getElementById('lhObs').value='';this.toggleHorasInput();this.openModal('modalHoras');},
+
+  salvarHoras(){const id=this.currentColabId;if(!id){toast('Colaborador não selecionado','error');return;}const c=this.colaboradores.find(x=>x.id===id);if(!c){toast('Colaborador não encontrado','error');return;}if(c.status!=='ativo'){toast('Colaborador inativo ou transferido','warning');return;}const data=document.getElementById('lhData').value;if(!data){toast('Data obrigatória','error');return;}const tipo=document.getElementById('lhTipo').value;const qtd=tipo==='horas'?parseFloat(document.getElementById('lhHoras').value)||0:0;const obs=sanitize(document.getElementById('lhObs').value);if(!this.horas[id])this.horas[id]=[];this.horas[id].push({data,tipo,qtd,obs,categoria:tipo==='atestado'?document.getElementById('lhCategoriaAtestado').value:''});this.save();toast('Registo guardado','success');this.closeModal('modalHoras');this.render();},
+
+  deletarHora(id,index){if(!confirm('Remover este registo?'))return;if(this.horas[id]&&this.horas[id][index]){this.horas[id].splice(index,1);this.save();toast('Registo removido','info');this.render();}},
+
+  downloadBlob(html,nome,mime){const blob=new Blob([html],{type:mime});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=nome;a.click();URL.revokeObjectURL(url);},
+
+  abrirExportacaoIndividual(id){const c=this.colaboradores.find(x=>x.id===id);if(!c)return;document.getElementById('modalExportIndividualTitle').textContent='Exportar — '+c.nome;document.getElementById('modalExportIndividualSub').textContent=c.tipoContrato;document.getElementById('dlIndFormato').value='csv';document.getElementById('dlIndDataInicio').value='';document.getElementById('dlIndDataFim').value='';this.openModal('modalExportarIndividual');},
+
+  abrirExportacaoGeral(){document.getElementById('dlFormato').value='csv';document.getElementById('dlDataInicio').value='';document.getElementById('dlDataFim').value='';document.getElementById('dlTipoContrato').value='todos';this.openModal('modalExportarGeral');},
+
+  executarExportacaoIndividual(){const id=this.colaboradores.find(c=>true)?.id;if(!id)return;const c=this.colaboradores.find(x=>x.id===id);if(!c)return;const di=document.getElementById('dlIndDataInicio').value;const df=document.getElementById('dlIndDataFim').value;const formato=document.getElementById('dlIndFormato').value;const rs=(this.horas[id]||[]).filter(h=>(!di||h.data>=di)&&(!df||h.data<=df)).sort((a,b)=>a.data.localeCompare(b.data));if(!rs.length){toast('Nenhum registo','warning');return;}if(formato==='csv'){const csv=['Data,Dia,Tipo,Horas,Observação'];rs.forEach(h=>{const dia=DIAS_SEMANA[getDow(h.data)];const qtd=h.tipo==='horas'?h.qtd:'';csv.push(`${formatDate(h.data)},${dia},${h.tipo},${qtd},"${h.obs||''}"`)});this.downloadBlob(csv.join('\n'),c.nome+'_'+todayISO()+'.csv','text/csv;charset=utf-8');}else{this.gerarPDFIndividual(c,rs,di,df);}this.closeModal('modalExportarIndividual');toast('Exportado com sucesso','success');},
+
+  executarExportacaoGeral(){const di=document.getElementById('dlDataInicio').value;const df=document.getElementById('dlDataFim').value;const tc=document.getElementById('dlTipoContrato').value;const formato=document.getElementById('dlFormato').value;let cols=this.colaboradores.filter(c=>c.ativo);if(tc!=='todos')cols=cols.filter(c=>c.tipoContrato===tc);if(!cols.length){toast('Nenhum colaborador','warning');return;}if(formato==='csv'){const csv=['ID,Colaborador,Cargo,Tipo,Total Horas'];cols.forEach(c=>{const th=this.getTotalHoras(c.id,di,df);if(th>0)csv.push(`${c.id},${c.nome},${c.cargo||'Operário'},${c.tipoContrato},${th}`)});if(csv.length===1){toast('Nenhum registo','warning');return;}this.downloadBlob(csv.join('\n'),'ResumoGeral_'+todayISO()+'.csv','text/csv;charset=utf-8');}else{this.gerarPDFGeral(cols,di,df);}this.closeModal('modalExportarGeral');toast('Exportado com sucesso','success');},
+
+  gerarPDFIndividual(colab,rs,di,df){let html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>HIGH PRO - ${colab.nome}</title><style>body{font-family:Arial,sans-serif;margin:20px;color:#333}h1{color:#0454EF;border-bottom:2px solid #0454EF;padding-bottom:10px}table{width:100%;border-collapse:collapse;margin:20px 0}th,td{border:1px solid #ddd;padding:8px;text-align:left}th{background:#0454EF;color:white}tr:nth-child(even){background:#f9f9f9}.footer{margin-top:30px;font-size:12px;color:#666;border-top:1px solid #ddd;padding-top:10px}</style></head><body>`;html+=`<h1>HIGH PRO - Registo de Ponto</h1>`;html+=`<p><strong>Colaborador:</strong> ${colab.nome} (${colab.id})<br><strong>Cargo:</strong> ${colab.cargo||'Operário'}<br><strong>Contrato:</strong> ${colab.tipoContrato}<br><strong>Período:</strong> ${di?formatDate(di):'Início'} a ${df?formatDate(df):'Fim'}</p>`;html+=`<table><thead><tr><th>Data</th><th>Dia</th><th>Tipo</th><th>Qtd</th><th>Observação</th></tr></thead><tbody>`;let total=0;rs.forEach(h=>{const dia=DIAS_SEMANA[getDow(h.data)];const qtd=h.tipo==='horas'?h.qtd:'—';if(h.tipo==='horas')total+=parseFloat(h.qtd||0);html+=`<tr><td>${formatDate(h.data)}</td><td>${dia}</td><td>${h.tipo}</td><td>${qtd}</td><td>${h.obs||'—'}</td></tr>`;});html+=`</tbody></table>`;html+=`<p><strong>Total de Horas:</strong> ${total}h</p>`;html+=`<div class="footer">Documento gerado automaticamente em ${new Date().toLocaleDateString('pt-PT')} às ${new Date().toLocaleTimeString('pt-PT')}</div>`;html+=`</body></html>`;const win=window.open('','_blank');win.document.write(html);win.document.close();setTimeout(()=>win.print(),500);},
+
+  gerarPDFGeral(cols,di,df){let html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>HIGH PRO - Resumo Geral</title><style>body{font-family:Arial,sans-serif;margin:20px;color:#333}h1{color:#0454EF;border-bottom:2px solid #0454EF;padding-bottom:10px}table{width:100%;border-collapse:collapse;margin:20px 0}th,td{border:1px solid #ddd;padding:8px;text-align:left}th{background:#0454EF;color:white}tr:nth-child(even){background:#f9f9f9}.footer{margin-top:30px;font-size:12px;color:#666;border-top:1px solid #ddd;padding-top:10px}</style></head><body>`;html+=`<h1>HIGH PRO - Resumo Geral de Horas</h1>`;html+=`<p><strong>Período:</strong> ${di?formatDate(di):'Início'} a ${df?formatDate(df):'Fim'}<br><strong>Total de Colaboradores:</strong> ${cols.length}</p>`;html+=`<table><thead><tr><th>ID</th><th>Colaborador</th><th>Cargo</th><th>Contrato</th><th>Total Horas</th></tr></thead><tbody>`;let totalGeral=0;cols.forEach(c=>{const th=this.getTotalHoras(c.id,di,df);totalGeral+=th;html+=`<tr><td>${c.id}</td><td>${c.nome}</td><td>${c.cargo||'Operário'}</td><td>${c.tipoContrato}</td><td>${th}h</td></tr>`;});html+=`</tbody></table>`;html+=`<p><strong>Total Geral de Horas:</strong> ${totalGeral}h</p>`;html+=`<div class="footer">Documento gerado automaticamente em ${new Date().toLocaleDateString('pt-PT')} às ${new Date().toLocaleTimeString('pt-PT')}</div>`;html+=`</body></html>`;const win=window.open('','_blank');win.document.write(html);win.document.close();setTimeout(()=>win.print(),500);},
+
+  render(){document.getElementById('headerDate').textContent=new Date().toLocaleDateString('pt-PT',{weekday:'long',day:'numeric',month:'long',year:'numeric'});let colaboradores=this.getFilteredColaboradores();if(this.viewMode==='arquivados'){colaboradores=this.colaboradores.filter(c=>c.arquivado===true);}else{colaboradores=colaboradores.filter(c=>!c.arquivado);}const fixos=colaboradores.filter(c=>c.tipoContrato==='fixo').length;const incertos=colaboradores.filter(c=>c.tipoContrato==='incerto').length;const totalHoras=colaboradores.reduce((s,c)=>s+this.getTotalHoras(c.id),0);const arquivados=this.colaboradores.filter(c=>c.arquivado===true);let html=`<div class="top-bar"><div class="top-bar-title"><h1>Colaboradores</h1><p>Gestão de controlo de ponto</p></div><div class="top-bar-actions"><button class="btn btn-primary" onclick="HORAS.abrirModalColab()">+ Novo Colaborador</button></div></div>`;html+=`<div class="quick-stats"><div class="quick-stat"><div class="quick-stat-label">Colaboradores</div><div class="quick-stat-value">${colaboradores.length}</div><div class="quick-stat-sub">${fixos} Fixo · ${incertos} Incerto</div></div><div class="quick-stat"><div class="quick-stat-label">Total de Horas</div><div class="quick-stat-value">${totalHoras}h</div><div class="quick-stat-sub">Período atual</div></div></div>`;html+=`<div class="filter-tags"><button class="filter-tag ${this.viewMode==='ativos'?'active':''}" onclick="HORAS.setViewMode('ativos')" style="font-weight:700">Ativos (${this.colaboradores.filter(c=>!c.arquivado).length})</button><button class="filter-tag ${this.viewMode==='arquivados'?'active':''}" onclick="HORAS.setViewMode('arquivados')" style="font-weight:700">Arquivados (${arquivados.length})</button></div>`;if(this.viewMode==='ativos'){html+=`<div class="filter-tags"><button class="filter-tag ${this.currentFilter==='todos'?'active':''}" onclick="HORAS.setFilter('todos')">Todos</button><button class="filter-tag ${this.currentFilter==='fixo'?'active':''}" onclick="HORAS.setFilter('fixo')">Fixo</button><button class="filter-tag ${this.currentFilter==='incerto'?'active':''}" onclick="HORAS.setFilter('incerto')">Termo Incerto</button></div>`;html+=`<div class="filter-tags"><button class="filter-tag ${this.currentStatusFilter==='todos'?'active':''}" onclick="HORAS.setStatusFilter('todos')">Todos Status</button><button class="filter-tag ${this.currentStatusFilter==='ativo'?'active':''}" onclick="HORAS.setStatusFilter('ativo')">Ativos</button><button class="filter-tag ${this.currentStatusFilter==='inativo'?'active':''}" onclick="HORAS.setStatusFilter('inativo')">Inativos</button><button class="filter-tag ${this.currentStatusFilter==='transferido'?'active':''}" onclick="HORAS.setStatusFilter('transferido')">Transferidos</button></div>`;}if(colaboradores.length===0){html+=`<div class="empty-state"><div class="empty-state-icon">👥</div><div class="empty-state-text">Nenhum colaborador</div><div class="empty-state-sub">${this.viewMode==='arquivados'?'Nenhum colaborador arquivado':'Clique em "Novo Colaborador" para começar'}</div></div>`;}else{html+=`<div class="horas-grid">`;colaboradores.forEach(c=>{const hc=(this.horas[c.id]||[]).sort((a,b)=>b.data.localeCompare(a.data));const th=this.getTotalHoras(c.id);const cls='colaborador-card '+c.status;const avt=`<div class="colab-avatar" style="background:${c.cor}">${initials(c.nome)}</div>`;const isExp=this.expandedCards[c.id];html+=`<div class="${cls}">`;if(!isExp){html+=`<div class="colab-card-minimized"><div style="display:flex;align-items:center;gap:12px;width:100%"><div style="flex:1">${avt}</div><div style="flex:1"><div class="colab-name" style="margin:0">${c.nome}</div><div class="colab-meta" style="font-size:11px">${c.cargo||'Operário'}</div></div></div><div style="text-align:center;margin:8px 0"><strong>${th}h</strong></div><div class="colab-id" style="font-size:11px">${c.id}</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px"><button class="btn btn-primary btn-sm" onclick="HORAS.abrirExportacaoIndividual('${c.id}')" style="font-size:11px">Exportar</button><button class="btn btn-outline btn-sm" onclick="HORAS.abrirModalColab('${c.id}')" style="font-size:11px">Editar</button></div>${this.viewMode==='arquivados'?`<button class="btn btn-success btn-sm" onclick="HORAS.desarquivarColaborador('${c.id}')" style="width:100%;margin-top:6px;font-size:11px">Ativar</button>`:`<button class="btn btn-outline btn-sm" onclick="HORAS.toggleCardExpanded('${c.id}')" style="width:100%;margin-top:6px;font-size:11px">Ver Horas</button>`}</div>`;}else{html+=`<div class="colab-card-header">${avt}<div class="colab-info"><div class="colab-name">${c.nome}<span class="badge badge-${c.status}" style="display:${c.status==='ativo'?'none':'inline-flex'}">${c.status}</span></div><div class="colab-meta">${c.cargo||'Operário'}</div><div class="colab-id" onclick="HORAS.copiarID('${c.id}')">${c.id}</div></div></div><div class="colab-card-body"><div class="colab-horas-list">`;if(hc.length===0){html+=`<div style="padding:12px;text-align:center;color:var(--text-tertiary);font-size:12px">Sem registos</div>`;}else{hc.slice(0,20).forEach((h,i)=>{const ti=h.tipo==='horas'?h.qtd+'h':(h.tipo==='falta'?'Falta':(h.tipo==='feriado'?'Feriado':'Atestado'));html+=`<div class="hora-row ${h.tipo}"><span class="hora-dia">${formatDate(h.data)}</span><span class="hora-dow">${DIAS_SEMANA[getDow(h.data)]}</span><span class="hora-val">${ti}</span><span class="hora-del" onclick="HORAS.deletarHora('${c.id}',${hc.indexOf(h)})">×</span></div>`;});}html+=`</div></div><div class="colab-card-footer"><button class="btn btn-primary btn-sm colab-btn-registro" onclick="HORAS.abrirModalHoras('${c.id}')">Lançar Horas</button><button class="btn btn-outline btn-sm" onclick="HORAS.abrirModalColab('${c.id}')">Editar</button>${c.status==='transferido'?`<button class="btn btn-warning btn-sm" onclick="HORAS.arquivarColaborador('${c.id}')" style="background:#F57C00;color:white">Arquivar</button>`:`<button class="btn btn-outline btn-sm" onclick="HORAS.deletarColaborador('${c.id}')">Remover</button>`}<button class="btn btn-outline btn-sm" onclick="HORAS.abrirExportacaoIndividual('${c.id}')">Exportar</button><button class="btn btn-outline btn-sm" onclick="HORAS.toggleCardExpanded('${c.id}')" style="width:100%;margin-top:6px">Minimizar</button></div>`;}html+=`</div>`});html+=`</div>`;}document.getElementById('mainContent').innerHTML=html;}
 };
 
-document.addEventListener('DOMContentLoaded',()=>HORAS.init());
+window.addEventListener('DOMContentLoaded',()=>{HORAS.render();document.getElementById('modalHoras').addEventListener('click',(e)=>{if(e.target.id==='modalHoras')HORAS.closeModal('modalHoras');});document.getElementById('modalColab').addEventListener('click',(e)=>{if(e.target.id==='modalColab')HORAS.closeModal('modalColab');});document.getElementById('modalExportarGeral').addEventListener('click',(e)=>{if(e.target.id==='modalExportarGeral')HORAS.closeModal('modalExportarGeral');});document.getElementById('modalExportarIndividual').addEventListener('click',(e)=>{if(e.target.id==='modalExportarIndividual')HORAS.closeModal('modalExportarIndividual');});});
 </script>
 </body>
 </html>
