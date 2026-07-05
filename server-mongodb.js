@@ -6,8 +6,9 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// MongoDB Connection String
-const MONGODB_URI = 'mongodb+srv://HIGHPRO:HIGHPRO2602@cluster0.e6wgpy6.mongodb.net/highpro?retryWrites=true&w=majority';
+// MongoDB Connection String (definir em variável de ambiente MONGODB_URI)
+const MONGODB_URI = process.env.MONGODB_URI;
+if (!MONGODB_URI) { console.error('MONGODB_URI não definida. Configure a variável de ambiente.'); process.exit(1); }
 const client = new MongoClient(MONGODB_URI);
 let db = null;
 
