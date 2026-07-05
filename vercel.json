@@ -2,6 +2,6 @@
   "buildCommand": "echo 'Build needed'",
   "outputDirectory": "public",
   "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" }
+    { "source": "/((?!api/|mobile).*)", "destination": "/index.html" }
   ]
 }

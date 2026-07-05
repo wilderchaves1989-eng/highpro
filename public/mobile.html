@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#0564FF">
+<title>HIGH PRO | Registo de Horas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  :root{--primary:#0564FF;--primary-dark:#0447D0;--primary-ghost:#F5F8FF;--primary-light:#E6F0FF;--success:#00A86B;--danger:#D32F2F;--warning:#F57C00;--text:#1A1A1A;--text2:#5A5A5A;--text3:#8A8A8A;--bg:#F4F6FA;--surface:#fff;--border:#E8ECF2;--font:'General Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+  body{font-family:var(--font);background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;min-height:100vh}
+  .app{max-width:520px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column}
+  .header{background:var(--primary);color:#fff;padding:20px 20px 22px;position:sticky;top:0;z-index:10;box-shadow:0 2px 12px rgba(5,100,255,0.25)}
+  .header .brand{font-size:18px;font-weight:700;letter-spacing:-0.3px;display:flex;align-items:center;gap:10px}
+  .header .logo{width:34px;height:34px;background:#fff;border-radius:9px;display:flex;align-items:center;justify-content:center}
+  .header .logo svg{width:22px;height:22px}
+  .header .sub{font-size:12px;opacity:0.9;margin-top:4px;font-weight:500}
+  .content{flex:1;padding:18px 16px 40px}
+  .toast-wrap{position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:9999;width:92%;max-width:480px;display:flex;flex-direction:column;gap:8px}
+  .toast{padding:13px 18px;border-radius:12px;color:#fff;font-size:14px;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,0.18);animation:slideDown 0.25s ease}
+  .toast.success{background:var(--success)}.toast.error{background:var(--danger)}.toast.info{background:var(--primary)}.toast.warning{background:var(--warning)}
+  @keyframes slideDown{from{transform:translateY(-16px);opacity:0}to{transform:translateY(0);opacity:1}}
+  .label{font-size:12px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.6px;margin:18px 0 8px;display:block}
+  .colab-list{display:flex;flex-direction:column;gap:10px}
+  .colab-btn{display:flex;align-items:center;gap:14px;background:var(--surface);border:1.5px solid var(--border);border-radius:14px;padding:14px 16px;cursor:pointer;transition:all 0.15s;width:100%;text-align:left;font-family:inherit}
+  .colab-btn:active{transform:scale(0.98)}
+  .colab-btn.sel{border-color:var(--primary);background:var(--primary-ghost)}
+  .avatar{width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;color:#fff;flex-shrink:0;overflow:hidden}
+  .avatar img{width:100%;height:100%;object-fit:cover}
+  .colab-nome{font-size:16px;font-weight:700;color:var(--text)}
+  .colab-cargo{font-size:13px;color:var(--text3);margin-top:1px}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:18px 16px;margin-bottom:16px}
+  .field{margin-bottom:16px}
+  .field:last-child{margin-bottom:0}
+  .field label{font-size:13px;font-weight:600;color:var(--text2);display:block;margin-bottom:7px}
+  input,select,textarea{width:100%;padding:14px 15px;border:1.5px solid var(--border);border-radius:12px;font-size:16px;font-family:inherit;outline:none;background:#fff;color:var(--text);transition:border 0.15s;-webkit-appearance:none}
+  input:focus,select:focus,textarea:focus{border-color:var(--primary)}
+  textarea{resize:none;min-height:56px}
+  .tipos{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .tipo-btn{padding:13px;border:1.5px solid var(--border);border-radius:12px;background:#fff;font-family:inherit;font-size:14px;font-weight:600;color:var(--text2);cursor:pointer;transition:all 0.15s}
+  .tipo-btn:active{transform:scale(0.97)}
+  .tipo-btn.sel{border-color:var(--primary);background:var(--primary);color:#fff}
+  .qtd-row{display:flex;align-items:center;gap:10px}
+  .qtd-step{width:52px;height:52px;border-radius:12px;border:1.5px solid var(--border);background:#fff;font-size:24px;font-weight:600;color:var(--primary);cursor:pointer;flex-shrink:0}
+  .qtd-step:active{background:var(--primary-ghost)}
+  .qtd-row input{text-align:center;font-size:22px;font-weight:700}
+  .btn-primary{width:100%;padding:17px;background:var(--primary);color:#fff;border:none;border-radius:14px;font-size:16px;font-weight:700;font-family:inherit;cursor:pointer;box-shadow:0 4px 14px rgba(5,100,255,0.3);transition:all 0.15s;margin-top:4px}
+  .btn-primary:active{transform:scale(0.98)}
+  .btn-primary:disabled{opacity:0.6}
+  .btn-back{background:none;border:none;color:#fff;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;padding:0;margin-bottom:10px;display:flex;align-items:center;gap:6px;opacity:0.95}
+  .recentes{margin-top:8px}
+  .rec-row{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--surface);border:1px solid var(--border);border-radius:10px;margin-bottom:8px;font-size:14px}
+  .rec-data{color:var(--text2);font-weight:500}
+  .rec-dow{color:var(--text3);font-size:12px;margin-left:6px}
+  .rec-val{font-weight:700}
+  .rec-val.t{color:var(--text)}.rec-val.f{color:var(--danger)}.rec-val.fe{color:#0D47A1}.rec-val.a{color:#BF360C}
+  .loading{text-align:center;padding:60px 20px;color:var(--text3);font-size:15px}
+  .spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:spin 0.7s linear infinite;margin:0 auto 16px}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .empty{text-align:center;padding:40px 20px;color:var(--text3);font-size:14px}
+  .hidden{display:none}
+</style>
+</head>
+<body>
+<div class="toast-wrap" id="toasts"></div>
+<div class="app">
+  <div class="header">
+    <div class="brand"><span class="logo"><svg viewBox="0 0 500 500"><path d="M259.3 406.33c-1.21-.25-3.58-2.02-5.25-3.93L251 398.93V250.28l5.9-3.64c3.25-2 6.2-3.64 6.55-3.64s6.74-3.6 14.17-8c7.43-4.4 13.72-8 13.97-8s4.83-2.64 10.18-5.87c5.35-3.23 12.65-7.46 16.23-9.4 3.58-1.94 7.51-4.98 8.75-6.77l2.25-3.26v-48.88c0-52.48.11-53.68 5.12-57.19 2.03-1.42 6.31-1.63 33.72-1.63h31.4l3.86 3.87 3.87 3.86.02 116.15c.02 99.15-.19 116.65-1.42 119.61-1.62 3.88-7.01 8.05-17.87 13.85-3.96 2.11-7.65 4.2-8.2 4.64-1.44 1.16-25.62 15.02-26.2 15.02-.27 0-1.69.85-3.15 1.88-1.46 1.04-4.31 2.82-6.34 3.95-2.03 1.14-14.41 8.28-27.5 15.87L292.5 406.5l-15.5.15c-8.52.08-16.49-.06-17.7-.32z" fill="#0564FF"/><path d="M97.24 403.58L93.5 400.15l-.25-118.32c-.3-136.75-1.6-121.77 11.23-129.05 4.15-2.35 13.31-7.69 20.36-11.86 7.05-4.17 13.55-7.85 14.44-8.2.89-.34 6.03-3.28 11.42-6.53 11.5-6.93 26.68-15 23.8-12.66-1.1.9-4.02 2.72-6.5 4.06-2.48 1.33-5.18 2.86-6 3.39-3.78 2.43-16.07 9.62-21.5 12.59-3.3 1.8-11.4 6.44-18 10.31-6.6 3.87-14.55 8.44-17.66 10.17-3.12 1.72-6.72 4.26-8 5.62l-2.34 2.49v237.48l3.84 2.42 3.85 3.42 30.84-.23 30.84-.24 3.01-2.88 3-2.88.31-50.12c.36-59.05-.26-55.54 10.95-61.19 3.78-1.9 9.37-5.06 12.44-7.03 3.07-1.96 5.79-3.36 6.04-3.11.5.49-16.14 10.71-17.44 10.71z" fill="#2E60BE"/></svg></span>HIGH PRO</div>
+    <div class="sub">Registo de Horas</div>
+  </div>
+  <div class="content" id="content">
+    <div class="loading"><div class="spinner"></div>A carregar colaboradores...</div>
+  </div>
+</div>
+<script>
+const DIAS=['DOM','SEG','TER','QUA','QUI','SEX','SAB'];
+let COLABS=[],HORAS={},sel=null;
+function todayISO(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function fmtData(iso){if(!iso)return'—';const[y,m,d]=iso.split('-');return d+'/'+m+'/'+y;}
+function getDow(iso){const[y,m,d]=iso.split('-');return new Date(+y,+m-1,+d).getDay();}
+function initials(n){return n.split(' ').map(x=>x[0]).join('').substring(0,2).toUpperCase();}
+function futura(iso){return iso>todayISO();}
+function esc(s){const d=document.createElement('div');d.textContent=s||'';return d.innerHTML;}
+function toast(msg,tipo){const w=document.getElementById('toasts');const el=document.createElement('div');el.className='toast '+(tipo||'info');el.textContent=msg;w.appendChild(el);setTimeout(()=>el.remove(),3000);}
+
+async function carregar(){
+  try{
+    const res=await fetch('/api/dados');
+    if(!res.ok)throw new Error('sem ligação');
+    const data=await res.json();
+    COLABS=(data.colaboradores||[]).filter(c=>c.ativo&&!c.arquivado&&c.status==='ativo');
+    HORAS=data.horas||{};
+    renderLista();
+  }catch(e){
+    document.getElementById('content').innerHTML='<div class="empty">Não foi possível ligar ao sistema.<br>Verifique a internet e recarregue a página.</div>';
+  }
+}
+
+function renderLista(){
+  if(!COLABS.length){document.getElementById('content').innerHTML='<div class="empty">Nenhum colaborador ativo.</div>';return;}
+  let h='<span class="label">Selecione o colaborador</span><div class="colab-list">';
+  COLABS.forEach(c=>{
+    const av=c.foto?`<img src="${c.foto}">`:initials(c.nome);
+    h+=`<button class="colab-btn" onclick="selecionar('${c.id}')"><div class="avatar" style="background:${c.foto?'transparent':(c.cor||'#0564FF')}">${av}</div><div><div class="colab-nome">${esc(c.nome)}</div><div class="colab-cargo">${esc(c.cargo||'Operário')}</div></div></button>`;
+  });
+  h+='</div>';
+  document.getElementById('content').innerHTML=h;
+}
+
+let tipoSel='horas';
+function selecionar(id){
+  sel=COLABS.find(c=>c.id===id);if(!sel)return;tipoSel='horas';
+  renderForm();
+}
+
+function renderForm(){
+  const av=sel.foto?`<img src="${sel.foto}">`:initials(sel.nome);
+  let h=`<button class="btn-back" onclick="renderLista()">‹ Voltar</button>`;
+  h+=`<div class="card"><div style="display:flex;align-items:center;gap:12px;margin-bottom:4px"><div class="avatar" style="background:${sel.foto?'transparent':(sel.cor||'#0564FF')}">${av}</div><div><div class="colab-nome">${esc(sel.nome)}</div><div class="colab-cargo">${esc(sel.cargo||'Operário')}</div></div></div></div>`;
+  h+=`<div class="card">`;
+  h+=`<div class="field"><label>Data</label><input type="date" id="fData" value="${todayISO()}" max="${todayISO()}"></div>`;
+  h+=`<div class="field"><label>Tipo de registo</label><div class="tipos">`;
+  h+=`<button class="tipo-btn sel" data-t="horas" onclick="setTipo('horas')">Horas</button>`;
+  h+=`<button class="tipo-btn" data-t="falta" onclick="setTipo('falta')">Falta</button>`;
+  h+=`<button class="tipo-btn" data-t="feriado" onclick="setTipo('feriado')">Feriado</button>`;
+  h+=`<button class="tipo-btn" data-t="atestado" onclick="setTipo('atestado')">Atestado</button>`;
+  h+=`</div></div>`;
+  h+=`<div class="field" id="qtdField"><label>Quantidade de horas</label><div class="qtd-row"><button class="qtd-step" onclick="stepQtd(-1)">−</button><input type="number" id="fQtd" value="8" min="0.5" max="24" step="0.5"><button class="qtd-step" onclick="stepQtd(1)">+</button></div></div>`;
+  h+=`<div class="field"><label>Observação (opcional)</label><textarea id="fObs" placeholder="Ex: saiu mais cedo..."></textarea></div>`;
+  h+=`<button class="btn-primary" id="btnLancar" onclick="lancar()">Lançar Registo</button>`;
+  h+=`</div>`;
+  h+=`<span class="label">Últimos registos</span><div class="recentes" id="recentes"></div>`;
+  document.getElementById('content').innerHTML=h;
+  renderRecentes();
+}
+
+function setTipo(t){tipoSel=t;document.querySelectorAll('.tipo-btn').forEach(b=>b.classList.toggle('sel',b.dataset.t===t));document.getElementById('qtdField').style.display=(t==='horas')?'block':'none';}
+function stepQtd(d){const i=document.getElementById('fQtd');let v=parseFloat(i.value)||0;v=Math.max(0.5,Math.min(24,v+d));i.value=v;}
+
+function renderRecentes(){
+  const regs=(HORAS[sel.id]||[]).slice().sort((a,b)=>b.data.localeCompare(a.data)).slice(0,6);
+  const el=document.getElementById('recentes');
+  if(!regs.length){el.innerHTML='<div class="empty">Sem registos ainda.</div>';return;}
+  el.innerHTML=regs.map(h=>{
+    let val,cls;
+    if(h.tipo==='horas'){val=h.qtd+'H';cls='t';}
+    else if(h.tipo==='falta'){val='Falta';cls='f';}
+    else if(h.tipo==='feriado'){val='Feriado';cls='fe';}
+    else{val='Atestado';cls='a';}
+    return `<div class="rec-row"><span class="rec-data">${fmtData(h.data)}<span class="rec-dow">${DIAS[getDow(h.data)]}</span></span><span class="rec-val ${cls}">${val}</span></div>`;
+  }).join('');
+}
+
+async function lancar(){
+  const data=document.getElementById('fData').value;
+  if(!data){toast('Selecione a data','error');return;}
+  if(futura(data)){toast('Não pode registar datas futuras','error');return;}
+  const qtd=tipoSel==='horas'?parseFloat(document.getElementById('fQtd').value):0;
+  if(tipoSel==='horas'&&(isNaN(qtd)||qtd<=0||qtd>24)){toast('Horas inválidas (0.5 a 24)','error');return;}
+  const obs=esc(document.getElementById('fObs').value.trim());
+  const btn=document.getElementById('btnLancar');btn.disabled=true;btn.textContent='A guardar...';
+  try{
+    // Buscar dados frescos para não sobrescrever alterações de outros
+    const res=await fetch('/api/dados');
+    if(!res.ok)throw new Error('sem ligação');
+    const cur=await res.json();
+    const colaboradores=cur.colaboradores||[];
+    const horas=cur.horas||{};
+    if(!horas[sel.id])horas[sel.id]=[];
+    const entry={data,tipo:tipoSel,qtd,categoria:'',obs};
+    const idx=horas[sel.id].findIndex(h=>h.data===data);
+    const substituiu=idx>=0;
+    if(idx>=0)horas[sel.id][idx]=entry;else horas[sel.id].push(entry);
+    const post=await fetch('/api/dados',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({colaboradores,horas})});
+    if(!post.ok)throw new Error('falha ao guardar');
+    HORAS=horas;
+    toast(substituiu?'Registo de '+fmtData(data)+' atualizado':'Registo lançado com sucesso','success');
+    document.getElementById('fObs').value='';
+    renderRecentes();
+  }catch(e){
+    toast('Erro ao guardar: '+e.message,'error');
+  }finally{
+    btn.disabled=false;btn.textContent='Lançar Registo';
+  }
+}
+
+carregar();
+</script>
+</body>
+</html>
