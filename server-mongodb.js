@@ -1,6 +1,9 @@
 const express = require('express');
 const { MongoClient } = require('mongodb');
 const path = require('path');
+const { spawn } = require('child_process');
+const fs = require('fs');
+const os = require('os');
 require('dotenv').config();
 
 const app = express();
@@ -62,6 +65,71 @@ app.post('/api/dados', async (req, res) => {
 
     res.json({ success: true, message: 'Dados salvos com sucesso' });
   } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// POST - Gerar Relatório PDF de Performance
+app.post('/api/gerar-relatorio', (req, res) => {
+  try {
+    const dados = req.body;
+    const tempDir = os.tmpdir();
+    const tempFile = path.join(tempDir, `relatorio_${Date.now()}.pdf`);
+
+    // Preparar dados para o Python
+    const jsonData = JSON.stringify(dados);
+
+    // Criar script Python temporário que gera o PDF
+    const pythonScript = `
+import sys
+import json
+import os
+sys.path.insert(0, '${path.join(__dirname).replace(/\\\\/g, '\\\\\\\\')}')
+
+from gerar_relatorio_pdf import RelatorioPerformance
+
+# Ler dados do stdin
+dados = json.loads('''${jsonData}''')
+
+# Gerar PDF
+relatorio = RelatorioPerformance(dados)
+relatorio.gerar_pdf('${tempFile.replace(/\\\\/g, '\\\\\\\\')}')
+print("OK")
+`;
+
+    // Executar Python
+    const python = spawn('python', ['-c', pythonScript], { cwd: __dirname });
+    let output = '';
+    let error = '';
+
+    python.stdout.on('data', (data) => {
+      output += data.toString();
+    });
+
+    python.stderr.on('data', (data) => {
+      error += data.toString();
+    });
+
+    python.on('close', (code) => {
+      if (code === 0 && fs.existsSync(tempFile)) {
+        // Enviar PDF
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader('Content-Disposition', `attachment; filename="${dados.nome.replace(/\\s+/g, '_')}_performance.pdf"`);
+        const fileStream = fs.createReadStream(tempFile);
+
+        fileStream.pipe(res);
+
+        // Deletar arquivo após envio
+        fileStream.on('end', () => {
+          try { fs.unlinkSync(tempFile); } catch (e) {}
+        });
+      } else {
+        console.error('Erro ao gerar PDF:', error || output);
+        res.status(500).json({ error: 'Erro ao gerar relatório', details: error });
+      }
+    });
+  } catch (error) {
+    console.error('Erro:', error);
     res.status(500).json({ error: error.message });
   }
 });
