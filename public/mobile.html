@@ -173,9 +173,8 @@ function enviarComprovativo(entry){
   else val='Atestado'+(entry.categoria?' ('+entry.categoria+')':'');
   const per=periodoContrato(sel.tipoContrato);
   const th=(HORAS[sel.id]||[]).filter(h=>h.tipo==='horas'&&h.data>=per.di&&h.data<=per.df).reduce((s,h)=>s+parseFloat(h.qtd||0),0);
-  const modelo=sel.tipoContrato==='fixo'?'Fixo de Portugal':'Termo Incerto';
   let msg='*HIGH PRO - Comprovativo de Hora*\n\n';
-  msg+='*Colaborador:* '+sel.nome+'\n*Contrato:* '+modelo+'\n*Data:* '+fmtData(entry.data)+' ('+dow+')\n*Registo:* '+val+'\n';
+  msg+='*Colaborador:* '+sel.nome+'\n*Data:* '+fmtData(entry.data)+' ('+dow+')\n*Registo:* '+val+'\n';
   if(entry.obs)msg+='*Observação:* '+entry.obs+'\n';
   msg+='\n*Período:* '+fmtData(per.di)+' a '+fmtData(per.df)+'\n*Total no período:* '+th+'H\n\n_Documento gerado por HIGH PRO Solutions_';
   window.open('https://wa.me/'+tel+'?text='+encodeURIComponent(msg),'_blank');
