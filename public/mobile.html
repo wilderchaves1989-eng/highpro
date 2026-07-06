@@ -154,6 +154,24 @@ function renderRecentes(){
   }).join('');
 }
 
+function enviarComprovativo(entry){
+  let tel=(sel.telefone||'').replace(/\D/g,'');
+  if(!tel)return;
+  if(tel.length===9)tel='351'+tel;
+  if(!confirm('Enviar comprovativo por WhatsApp a '+sel.nome+'?'))return;
+  const dow=DIAS[getDow(entry.data)];
+  let val;
+  if(entry.tipo==='horas')val=entry.qtd+'H';
+  else if(entry.tipo==='falta')val='Falta';
+  else if(entry.tipo==='feriado')val='Feriado';
+  else val='Atestado'+(entry.categoria?' ('+entry.categoria+')':'');
+  const th=(HORAS[sel.id]||[]).filter(h=>h.tipo==='horas').reduce((s,h)=>s+parseFloat(h.qtd||0),0);
+  let msg='*HIGH PRO - Comprovativo de Hora*\n\n';
+  msg+='*Colaborador:* '+sel.nome+'\n*Data:* '+fmtData(entry.data)+' ('+dow+')\n*Registo:* '+val+'\n';
+  if(entry.obs)msg+='*Observação:* '+entry.obs+'\n';
+  msg+='\n*Total acumulado:* '+th+'H\n\n_Documento gerado por HIGH PRO Solutions_';
+  window.open('https://wa.me/'+tel+'?text='+encodeURIComponent(msg),'_blank');
+}
 async function lancar(){
   const data=document.getElementById('fData').value;
   if(!data){toast('Selecione a data','error');return;}
@@ -177,9 +195,11 @@ async function lancar(){
     const post=await fetch('/api/dados',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({colaboradores,horas})});
     if(!post.ok)throw new Error('falha ao guardar');
     HORAS=horas;
+    const fresh=colaboradores.find(c=>c.id===sel.id);if(fresh){sel.telefone=fresh.telefone;sel.nome=fresh.nome;sel.cargo=fresh.cargo;}
     toast(substituiu?'Registo de '+fmtData(data)+' atualizado':'Registo lançado com sucesso','success');
     document.getElementById('fObs').value='';
     renderRecentes();
+    enviarComprovativo(entry);
   }catch(e){
     toast('Erro ao guardar: '+e.message,'error');
   }finally{
