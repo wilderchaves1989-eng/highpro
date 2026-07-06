@@ -50,6 +50,8 @@
   .btn-primary{width:100%;padding:17px;background:var(--primary);color:#fff;border:none;border-radius:14px;font-size:16px;font-weight:700;font-family:inherit;cursor:pointer;box-shadow:0 4px 14px rgba(5,100,255,0.3);transition:all 0.15s;margin-top:4px}
   .btn-primary:active{transform:scale(0.98)}
   .btn-primary:disabled{opacity:0.6}
+  .btn-home{width:100%;padding:12px 20px;background:#1A1A1A;color:#fff;border:none;border-radius:999px;font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;margin-bottom:16px}
+  .btn-home:active{transform:scale(0.97)}
   .btn-back{background:none;border:none;color:#fff;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;padding:0;margin-bottom:10px;display:flex;align-items:center;gap:6px;opacity:0.95}
   .recentes{margin-top:8px}
   .rec-row{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--surface);border:1px solid var(--border);border-radius:10px;margin-bottom:8px;font-size:14px}
@@ -118,7 +120,7 @@ function selecionar(id){
 
 function renderForm(){
   const av=sel.foto?`<img src="${sel.foto}">`:initials(sel.nome);
-  let h=`<button class="btn-back" onclick="renderLista()">‹ Voltar</button>`;
+  let h=`<button class="btn-home" onclick="renderLista()">↵ Home</button>`;
   h+=`<div class="card"><div style="display:flex;align-items:center;gap:12px;margin-bottom:4px"><div class="avatar" style="background:${sel.foto?'transparent':(sel.cor||'#0564FF')}">${av}</div><div><div class="colab-nome">${esc(sel.nome)}</div><div class="colab-cargo">${esc(sel.cargo||'Operário')}</div></div></div></div>`;
   h+=`<div class="card">`;
   h+=`<div class="field"><label>Data</label><input type="date" id="fData" value="${todayISO()}" max="${todayISO()}"></div>`;
