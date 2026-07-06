@@ -154,6 +154,12 @@ function renderRecentes(){
   }).join('');
 }
 
+function periodoContrato(tipo){
+  const hoje=todayISO();const mes=parseInt(hoje.substring(5,7)),ano=parseInt(hoje.substring(0,4)),dia=parseInt(hoje.substring(8,10));let di,df;
+  if(tipo==='fixo'){di=ano+'-'+String(mes).padStart(2,'0')+'-01';const ult=new Date(ano,mes,0).getDate();df=ano+'-'+String(mes).padStart(2,'0')+'-'+String(ult).padStart(2,'0');}
+  else{if(dia>=26){di=ano+'-'+String(mes).padStart(2,'0')+'-26';const pm=mes===12?1:mes+1,pa=mes===12?ano+1:ano;df=pa+'-'+String(pm).padStart(2,'0')+'-25';}else{const mp=mes===1?12:mes-1,ap=mes===1?ano-1:ano;di=ap+'-'+String(mp).padStart(2,'0')+'-26';df=ano+'-'+String(mes).padStart(2,'0')+'-25';}}
+  return{di,df};
+}
 function enviarComprovativo(entry){
   let tel=(sel.telefone||'').replace(/\D/g,'');
   if(!tel)return;
@@ -165,11 +171,13 @@ function enviarComprovativo(entry){
   else if(entry.tipo==='falta')val='Falta';
   else if(entry.tipo==='feriado')val='Feriado';
   else val='Atestado'+(entry.categoria?' ('+entry.categoria+')':'');
-  const th=(HORAS[sel.id]||[]).filter(h=>h.tipo==='horas').reduce((s,h)=>s+parseFloat(h.qtd||0),0);
+  const per=periodoContrato(sel.tipoContrato);
+  const th=(HORAS[sel.id]||[]).filter(h=>h.tipo==='horas'&&h.data>=per.di&&h.data<=per.df).reduce((s,h)=>s+parseFloat(h.qtd||0),0);
+  const modelo=sel.tipoContrato==='fixo'?'Fixo de Portugal':'Termo Incerto';
   let msg='*HIGH PRO - Comprovativo de Hora*\n\n';
-  msg+='*Colaborador:* '+sel.nome+'\n*Data:* '+fmtData(entry.data)+' ('+dow+')\n*Registo:* '+val+'\n';
+  msg+='*Colaborador:* '+sel.nome+'\n*Contrato:* '+modelo+'\n*Data:* '+fmtData(entry.data)+' ('+dow+')\n*Registo:* '+val+'\n';
   if(entry.obs)msg+='*Observação:* '+entry.obs+'\n';
-  msg+='\n*Total acumulado:* '+th+'H\n\n_Documento gerado por HIGH PRO Solutions_';
+  msg+='\n*Período:* '+fmtData(per.di)+' a '+fmtData(per.df)+'\n*Total no período:* '+th+'H\n\n_Documento gerado por HIGH PRO Solutions_';
   window.open('https://wa.me/'+tel+'?text='+encodeURIComponent(msg),'_blank');
 }
 async function lancar(){
@@ -195,7 +203,7 @@ async function lancar(){
     const post=await fetch('/api/dados',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({colaboradores,horas})});
     if(!post.ok)throw new Error('falha ao guardar');
     HORAS=horas;
-    const fresh=colaboradores.find(c=>c.id===sel.id);if(fresh){sel.telefone=fresh.telefone;sel.nome=fresh.nome;sel.cargo=fresh.cargo;}
+    const fresh=colaboradores.find(c=>c.id===sel.id);if(fresh){sel.telefone=fresh.telefone;sel.nome=fresh.nome;sel.cargo=fresh.cargo;sel.tipoContrato=fresh.tipoContrato;}
     toast(substituiu?'Registo de '+fmtData(data)+' atualizado':'Registo lançado com sucesso','success');
     document.getElementById('fObs').value='';
     renderRecentes();
